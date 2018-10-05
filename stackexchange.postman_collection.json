@@ -1,0 +1,470 @@
+{
+	"info": {
+		"_postman_id": "4de6d8da-1618-4607-b98f-708851247634",
+		"name": "stackexchange",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Request all answers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d1cdc965-5757-4a5e-be32-3d96ce758ce4",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"should be valid and have a body\", () => {",
+							"     pm.response.to.be.ok; ",
+							"     pm.response.to.be.withBody;",
+							"     pm.response.to.be.json; ",
+							"});",
+							"",
+							"pm.test(\"should return 30 items\", () => {",
+							"    pm.expect(pm.response.json().items.length).to.equal(30);",
+							"});",
+							"",
+							"pm.test(\"should have the correct body\", () => {",
+							"    pm.expect(pm.response.json().items[0]).to.have.property(\"owner\");",
+							"    pm.expect(pm.response.json().items[0].owner).to.have.property(\"reputation\");",
+							"    pm.expect(pm.response.json().items[0].owner).to.have.property(\"user_id\");",
+							"    pm.expect(pm.response.json().items[0].owner).to.have.property(\"user_type\");",
+							"    pm.expect(pm.response.json().items[0].owner).to.have.property(\"profile_image\");",
+							"    pm.expect(pm.response.json().items[0].owner).to.have.property(\"display_name\");",
+							"    pm.expect(pm.response.json().items[0].owner).to.have.property(\"link\");",
+							"    pm.expect(pm.response.json().items[0]).to.have.property(\"is_accepted\");",
+							"    pm.expect(pm.response.json().items[0]).to.have.property(\"score\");",
+							"    pm.expect(pm.response.json().items[0]).to.have.property(\"last_activity_date\");",
+							"    pm.expect(pm.response.json().items[0]).to.have.property(\"creation_date\");",
+							"    pm.expect(pm.response.json().items[0]).to.have.property(\"answer_id\");",
+							"    pm.expect(pm.response.json().items[0]).to.have.property(\"question_id\");",
+							"});",
+							"",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "client_id",
+							"value": "{{client_id}}\n",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "{{client_secret}}",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "code",
+							"value": "{{code}}",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "redirect_uri",
+							"value": "{{redirect_uri}}\n",
+							"type": "text"
+						},
+						{
+							"key": "scope",
+							"value": "write_access",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseUrl}}/2.2/answers?order=desc&sort=activity&site={{site}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"2.2",
+						"answers"
+					],
+					"query": [
+						{
+							"key": "order",
+							"value": "desc"
+						},
+						{
+							"key": "sort",
+							"value": "activity"
+						},
+						{
+							"key": "site",
+							"value": "{{site}}"
+						}
+					]
+				},
+				"description": "request for all answers"
+			},
+			"response": []
+		},
+		{
+			"name": "Request using wrong site",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d494c2e2-a1b0-4252-9ea9-01d559bf9e09",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"should return 400 when wrong parameter is sent\", () => {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"should return an error message\", () => {",
+							"    pm.expect(pm.response.json().error_message).to.equal(\"No site found for name `stackoverflow0`\");",
+							"});",
+							"",
+							"pm.test(\"should return an error_name wrong parameter\", () => {",
+							"    pm.expect(pm.response.json().error_name).to.equal(\"bad_parameter\");",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{baseUrl}}/2.2/questions?order=desc&sort=activity&site=stackoverflow0",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"2.2",
+						"questions"
+					],
+					"query": [
+						{
+							"key": "order",
+							"value": "desc"
+						},
+						{
+							"key": "sort",
+							"value": "activity"
+						},
+						{
+							"key": "site",
+							"value": "stackoverflow0"
+						}
+					]
+				},
+				"description": "Wrong site"
+			},
+			"response": []
+		},
+		{
+			"name": "Request all users with Laise in the name",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "00e73f0b-6c4e-4cc1-942d-79cd7ec5e619",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"should return status OK\", () => {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"should have a body\", () => {",
+							"     pm.response.to.be.withBody;",
+							"     pm.response.to.be.json; ",
+							"});",
+							"",
+							"pm.test(\"should return 30 items\", () => {",
+							"    pm.expect(pm.response.json().items.length).to.equal(30);",
+							"});",
+							"",
+							"pm.test(\"should have the word laise in the name\", () => {",
+							"    pm.expect(pm.response.json().items[0].display_name).to.contain(\"laise\");",
+							"});",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{baseUrl}}/2.2/users?order=desc&sort=reputation&inname=laise&site={{site}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"2.2",
+						"users"
+					],
+					"query": [
+						{
+							"key": "order",
+							"value": "desc"
+						},
+						{
+							"key": "sort",
+							"value": "reputation"
+						},
+						{
+							"key": "inname",
+							"value": "laise"
+						},
+						{
+							"key": "site",
+							"value": "{{site}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Request all questions",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c6c7d407-6ac9-43f8-9bab-dc613d05d278",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"should return status OK\", () => {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"should have a body\", () => {",
+							"     pm.response.to.be.withBody;",
+							"     pm.response.to.be.json; ",
+							"});",
+							"",
+							"pm.test(\"should return 30 items\", () => {",
+							"    pm.expect(pm.response.json().items.length).to.equal(30);",
+							"});",
+							"",
+							"pm.test(\"shoul have the tag testing\", () => {",
+							"    pm.expect(pm.response.json().items[0].tags).to.contain(\"testing\");",
+							"",
+							"})"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{baseUrl}}/2.2/questions?order=desc&sort=activity&tagged=testing&site={{site}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"2.2",
+						"questions"
+					],
+					"query": [
+						{
+							"key": "order",
+							"value": "desc"
+						},
+						{
+							"key": "sort",
+							"value": "activity"
+						},
+						{
+							"key": "tagged",
+							"value": "testing"
+						},
+						{
+							"key": "site",
+							"value": "{{site}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Request all javascript searches",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0d49ed50-8f16-4024-92e5-354a4782616e",
+						"type": "text/javascript",
+						"exec": [
+							"let jsonData = JSON.parse(responseBody);",
+							"",
+							"let schema = {",
+							"    \"items\": {",
+							"        \"tags\": {\"type\": \"array\"},",
+							"        \"owner\": {\"type\": \"array\"},",
+							"        \"is_answered\": \"boolean\",",
+							"            \"view_count\": \"integer\",",
+							"            \"answer_count\": \"string\",",
+							"            \"score\": \"integer\",",
+							"            \"last_activity_date\": \"string\",",
+							"            \"creation_date\": \"string\",",
+							"            \"last_edit_date\": \"string\",",
+							"            \"question_id\": \"integer\",",
+							"            \"link\": \"string\",",
+							"            \"title\": \"string\"",
+							"    },",
+							"    \"has_more\": \"boolean\",",
+							"    \"quota_max\": \"integer\",",
+							"    \"quota_remaining\": \"integer\"",
+							"}",
+							"",
+							"pm.test(\"should return status OK\", () => {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"should have a body\", () => {",
+							"     pm.response.to.be.withBody;",
+							"     pm.response.to.be.json; ",
+							"});",
+							"",
+							"pm.test(\"should return 30 items\", () => {",
+							"    pm.expect(pm.response.json().items.length).to.equal(30);",
+							"});",
+							"",
+							"pm.test(\"shoul have a valid schema\", () => {",
+							"    tv4.validate(jsonData, schema)",
+							"})",
+							"",
+							"",
+							""
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "d4d2ad08-8317-47d1-ae7f-152e7d5741fc",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{baseUrl}}/2.2/search?order=desc&sort=activity&site=stackoverflow&tagged=javascript",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"2.2",
+						"search"
+					],
+					"query": [
+						{
+							"key": "order",
+							"value": "desc"
+						},
+						{
+							"key": "sort",
+							"value": "activity"
+						},
+						{
+							"key": "site",
+							"value": "stackoverflow"
+						},
+						{
+							"key": "tagged",
+							"value": "javascript"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Request all javascript tags",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "8d066696-6883-431a-9e14-31b1040e51d8",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "67e4ae9a-498a-41f8-8393-cec32d236f61",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"should return status OK\", () => {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"should have a body\", () => {",
+							"     pm.response.to.be.withBody;",
+							"     pm.response.to.be.json; ",
+							"});",
+							"",
+							"pm.test(\"should return 30 items\", () => {",
+							"    pm.expect(pm.response.json().items.length).to.equal(30);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{baseUrl}}/2.2/tags?order=desc&sort=popular&inname={{inname}}&site={{site}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"2.2",
+						"tags"
+					],
+					"query": [
+						{
+							"key": "order",
+							"value": "desc"
+						},
+						{
+							"key": "sort",
+							"value": "popular"
+						},
+						{
+							"key": "inname",
+							"value": "{{inname}}"
+						},
+						{
+							"key": "site",
+							"value": "{{site}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
